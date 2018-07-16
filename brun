@@ -1,0 +1,4 @@
+export AUTH_SECRET=this_is_a_top_secret_key
+docker-compose stop
+docker-compose build
+docker-compose up

@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  h1(class='display-3 text-center my-4 bg-dark text-light p-3')= title
+    h2(class='display-5 text-center my-4') Login
+    #login(class='container')
+      fieldset
+        #div-username(class='form-group')
+          label(for='username') Username
+          input#username(type='text', class='form-control form-control-sm', placeholder='Username', name='username')
+        #div-password(class='form-group')
+          label(for='password') Password
+          input#password(type='password', class='form-control form-control-sm', placeholder='Password', name='password')
+        input#token(type='hidden', name='token', readonly='readonly')
+        br
+        #div-button(class='text-md-center')
+          button#btnLogin(class='btn btn-primary', onclick='authenticate()') Login
+        br
+      #message(class='alert alert-info')

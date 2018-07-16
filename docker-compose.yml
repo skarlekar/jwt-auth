@@ -1,0 +1,40 @@
+version: "3.5"
+
+services:
+  authenticator-app:
+    container_name: authenticator
+    restart: always
+    build: authenticator/.
+    environment:
+      - AUTH_SECRET
+    ports:
+      - "8081:3000"
+    networks:
+      - auth-network
+    links:
+      - mongo
+  user-manager-app:
+    container_name: user-manager
+    restart: always
+    build: user-manager/.
+    environment:
+      - AUTH_SECRET
+    ports:
+      - "8082:3000"
+    networks:
+      - auth-network
+    links:
+      - mongo
+  mongo:
+    container_name: mongo
+    image: mongo
+    command: mongod --auth
+    volumes:
+      - /home/hyperuser/mongo-data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - auth-network  
+networks:
+  auth-network:
+    name: authenticate

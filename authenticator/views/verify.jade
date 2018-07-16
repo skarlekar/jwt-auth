@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  h1= title
+  h2 Verify JSON Web Token
+  #verify
+    fieldset
+      input#token(type='text', placeholder='token', name='token', value='#{token}')
+      br
+      button#btnVerify(onclick='verify()') Verify
+      br
+  #message
+  br
+  pre#values
+  script(src='/javascripts/verify.js')

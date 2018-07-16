@@ -1,0 +1,25 @@
+version: "3.5"
+services:
+  app:
+    container_name: auth-service
+    restart: always
+    build: .
+    ports:
+      - "8081:3000"
+    networks:
+      - auth-network
+    links:
+      - mongo
+  mongo:
+    container_name: mongo
+    image: mongo
+    command: mongod --auth
+    volumes:
+      - /home/hyperuser/mongo-data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - auth-network  
+networks:
+  auth-network:
+    name: authenticate
