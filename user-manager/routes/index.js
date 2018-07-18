@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
+var appConfig = require('../config');
 const SECRET = "" + process.env.AUTH_SECRET;
 
 
@@ -42,7 +43,7 @@ router.use((req, res, next) => {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'User Management Service' });
+  res.render('index', { title: 'User Management Service' , 'apps': appConfig.apps });
 });
 
 module.exports = router;

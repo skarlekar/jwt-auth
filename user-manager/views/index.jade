@@ -1,65 +1,88 @@
 extends layout
-
 block content
-  h1= title
-  p #{title} Front-end
-
-  // Wrapper
+  h1(class='text-center')= title
   #wrapper
-
-    // USER INFO
-    #userInfo
-      h2 User Info
-      p
-        strong User Name:
-        |  <span id='userInfoUserName'></span>
-        br
-        strong First Name:
-        |  <span id='userInfoFirstName'></span>
-        br
-        strong Last Name:
-        |  <span id='userInfoLastName'></span>
-        br
-        strong Email:
-        |  <span id='userInfoEmail'></span>
-        br
-        strong Age:
-        |  <span id='userInfoAge'></span>
-        br
-        strong Gender:
-        |  <span id='userInfoGender'></span>
-        br
-        strong Location:
-        |  <span id='userInfoLocation'></span>
-    // /USER INFO
-
-    // USER LIST
-    h2 User List
-    #userList
-      table
-        thead
-          th UserName
-          th Email
-          th Delete?
-        tbody
-    // /USER LIST
-
-    // ADD USER
-    h2 Add User
-    #addUser
-      fieldset
-        input#inputUserName(type='text', placeholder='Username')
-        input#inputUserEmail(type='text', placeholder='Email')
-        br
-        input#inputPassword(type='password', placeholder='Password')
-        input#inputVerifyPassword(type='password', placeholder='Verify Password')
-        br
-        input#inputUserFirstname(type='text', placeholder='First Name')
-        input#inputUserLastname(type='text', placeholder='Last Name')
-        br
-        input#inputUserLocation(type='text', placeholder='Location')
-        input#inputUserGender(type='text', placeholder='Gender')
-        br
-        button#btnAddUser Add User
-    // /ADD USER
-  // /WRAPPER
+    //- var apps = ["App1", "App2", "App3"]
+    #card(class='card')
+      // #card-header(class='card-header') User Management
+      //   ul(class='nav nav-tabs card-header-tabs')
+      //     li(class='nav-item')
+      //       a(class='nav-link active' href='#addUserCard') Add User
+      //     li(class='nav-item')
+      //       a(class='nav-link' href='#viewUsersCard') View Users
+      #card-body(class='card-body')
+        h4#viewUsersCard(class='card-title text-center') User List
+        #inner-card-group(class='card-group')
+          #inner-card1(class='card')
+            #inner-card-body1(class='card-body')
+              h4#cardSummary(class='card-title text-center') User Summary
+              #userList(class='container')
+              table(class='table table-striped')
+                thead
+                  th UserName
+                  th Email
+                  th Delete?
+                tbody#user-summary-tbody
+          #inner-card2(class='card')
+            #inner-card-body2(class='card-body')
+              h4#cardDetail(class='card-title text-center') User Detail
+              p
+                strong User Name:
+                |  <span id='userInfoUserName'></span>
+                br
+                strong First Name:
+                |  <span id='userInfoFirstName'></span>
+                br
+                strong Last Name:
+                |  <span id='userInfoLastName'></span>
+                br
+                strong Email:
+                |  <span id='userInfoEmail'></span>
+                br
+                strong Organization:
+                |  <span id='userInfoOrg'></span>
+                br
+                strong Admin User:
+                |  <span id='userInfoAdmin'></span>
+                br
+                strong Authorized Applications:
+                |  <span id='userInfoAuthorizedApps'></span>
+      #card-body(class='card-body')
+        h4#addUserCard(class='card-title text-center') Add New User
+        #addUser(class='container')
+          fieldset
+            #div-username(class='form-group')
+              label(for='inputUserName') Username:
+              input#inputUserName(type='text', placeholder='Username', class='form-control form-control-sm')
+            #div-password(class='form-group')
+              label(for='inputPassword') Password:
+              input#inputPassword(type='password', placeholder='Password', class='form-control form-control-sm')
+            #div-verify-password(class='form-group')
+              label(for='inputVerifyPassword') Verify Password:
+              input#inputVerifyPassword(type='password', placeholder='Verify Password', class='form-control form-control-sm')
+            #div-first-name(class='form-group')
+              label(for='inputUserFirstname') First Name:
+              input#inputUserFirstname(type='text', placeholder='First Name', class='form-control form-control-sm')
+            #div-last-name(class='form-group')
+              label(for='inputUserLastname') Last Name:
+              input#inputUserLastname(type='text', placeholder='Last Name', class='form-control form-control-sm')
+            #div-email(class='form-group')
+              label(for='inputUserEmail') Email
+              input#inputUserEmail(type='text', placeholder='Email', class='form-control form-control-sm')
+              small(class='form-text text-muted') Your email will not be shared with anyone
+            #div-org(class='form-group')
+              label(for='inputUserOrganization') Organization
+              input#inputUserOrganization(type='text', placeholder='Organization', class='form-control form-control-sm')
+            #div-admin(class='form-check')
+              label(for='adminUser', class='form-check-label')  
+                input#adminUser(type='checkbox',checked=false, disabled=false, class='form-check-input') 
+                span Admin User
+            #div-authorized-apps(class='form-group')
+              label(for='authorizedApps') Authorized Applications: 
+              select#authorizedApps(multiple=true, class='form-control')
+                each app, i in apps
+                  option(value=app) #{app)
+            br
+            #div-button(class='text-md-center')
+              button#btnAddUser(class='btn btn-primary') Add User
+            br

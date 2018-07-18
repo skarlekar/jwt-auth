@@ -8,13 +8,15 @@ $(document).ready(function() {
   populateTable();
 
   // Username link click
-  $('#userList table tbody').on('click', 'td a.linkshowuser', showUserInfo);
+  //$('#userList table tbody').on('click', 'td a.linkshowuser', showUserInfo);
+  $('#user-summary-tbody').on('click', 'td a.linkshowuser', showUserInfo);
 
   // Add User button click
   $('#btnAddUser').on('click', addUser);
 
   // Delete User link click
-  $('#userList table tbody').on('click', 'td a.linkdeleteuser', deleteUser);
+  //$('#userList table tbody').on('click', 'td a.linkdeleteuser', deleteUser);
+  $('#user-summary-tbody').on('click', 'td a.linkdeleteuser', deleteUser);
 
 });
 
@@ -41,7 +43,6 @@ function populateTable() {
 
   // jQuery AJAX call for JSON
   $.getJSON(userListUrl, function(data) {
-
     // Stick our user data array into a userlist variable in the global object
     userListData = data;
 
@@ -54,14 +55,14 @@ function populateTable() {
       tableContent += '</tr>';
     });
 
+    document.getElementById('user-summary-tbody').innerHTML = tableContent;
     // Inject the whole content string into our existing HTML table
-    $('#userList table tbody').html(tableContent);
+    //$('#userList table tbody').html(tableContent);
   });
 };
 
 // Show User Info
 function showUserInfo(event) {
-
   // Prevent Link from Firing
   event.preventDefault();
 
@@ -74,23 +75,31 @@ function showUserInfo(event) {
   // Get our User Object
   var thisUserObject = userListData[arrayPosition];
 
+  console.log('thisUserObject: ' + JSON.stringify(thisUserObject));
+
   // Retrieve values
   var username = (thisUserObject.username) ? thisUserObject.username : '';
   var firstname = (thisUserObject.firstname) ? thisUserObject.firstname : '';
   var lastname = (thisUserObject.lastname) ? thisUserObject.lastname : '';
   var email = (thisUserObject.email) ? thisUserObject.email : '';
-  var age = (thisUserObject.age) ? thisUserObject.age : '';
-  var gender = (thisUserObject.gender) ? thisUserObject.gender : '';
-  var location = (thisUserObject.location) ? thisUserObject.location : '';
+  var org = (thisUserObject.org) ? thisUserObject.org : '';
+  var authorizedApps = thisUserObject['authorizedApps'];
+  var authorized = '';
+
+  if ((authorizedApps) && (authorizedApps != 'null'))
+    for (var i = 0, len = authorizedApps.length; i < len; i++) {
+      authorized = authorized + ((i > 0) ? ', ' : '');
+      authorized = authorized + authorizedApps[i];
+    }
 
   //Populate Info Box
   $('#userInfoUserName').text(username);
   $('#userInfoFirstName').text(firstname);
   $('#userInfoLastName').text(lastname);
   $('#userInfoEmail').text(email);
-  $('#userInfoAge').text(age);
-  $('#userInfoGender').text(gender);
-  $('#userInfoLocation').text(location);
+  $('#userInfoOrg').text(org);
+  $('#userInfoAdmin').text(thisUserObject.adminUser);
+  $('#userInfoAuthorizedApps').text(authorized);
 };
 
 function trim(value) {
@@ -105,52 +114,55 @@ function addUser(event) {
   // Super basic validation - increase errorCount variable if any fields are blank
   var errorCount = 0;
   $('#addUser input').each(function(index, val) {
-    if ($(this).val() === '') { errorCount++; }
+    if ($(this).val() === '' && $(this).attr('id') != 'adminUser') { errorCount++; }
   });
+
+  console.log('ErrorCount: ' + errorCount);
 
   // Check and make sure errorCount's still at zero
   if (errorCount === 0) {
 
+    var adminUser = $('#addUser fieldset input#adminUser').is(":checked");
+    var appsVal = "" + $("#authorizedApps").val();
+    var authorizedApps = appsVal.split(',');
+
+    console.log('Authorized apps: ' + authorizedApps);
+
     // If it is, compile all user info into one object
     var newUser = {
-      'username': trim($('#addUser fieldset input#inputUserName').val()),
-      'email': trim($('#addUser fieldset input#inputUserEmail').val()),
-      'firstname': trim($('#addUser fieldset input#inputUserFirstname').val()),
-      'lastname': trim($('#addUser fieldset input#inputUserLastname').val()),
-      'age': trim($('#addUser fieldset input#inputUserAge').val()),
-      'location': trim($('#addUser fieldset input#inputUserLocation').val()),
-      'gender': trim($('#addUser fieldset input#inputUserGender').val()),
-      'password': trim($('#addUser fieldset input#inputPassword').val()),
-      'verifypassword': trim($('#addUser fieldset input#inputVerifyPassword').val())
+      username: trim($('#addUser fieldset input#inputUserName').val()),
+      email: trim($('#addUser fieldset input#inputUserEmail').val()),
+      firstname: trim($('#addUser fieldset input#inputUserFirstname').val()),
+      lastname: trim($('#addUser fieldset input#inputUserLastname').val()),
+      org: trim($('#addUser fieldset input#inputUserOrganization').val()),
+      password: trim($('#addUser fieldset input#inputPassword').val()),
+      verifypassword: trim($('#addUser fieldset input#inputVerifyPassword').val()),
+      adminUser: adminUser,
+      authorizedApps: authorizedApps
     }
 
     var token = getParameterByName('token');
     var addUserUrl = '/users/adduser?token=' + token;
-    // Use AJAX to post the object to our adduser service
-    $.ajax({
-      type: 'POST',
-      data: newUser,
-      url: addUserUrl,
-      dataType: 'JSON'
-    }).done(function(response) {
+    var xhttp = new XMLHttpRequest();
 
-      // Check for successful (blank) response
-      if (response.msg === '') {
-
+    xhttp.onreadystatechange = function() {
+      if (xhttp.readyState == 4 && xhttp.status == 200) {
+        var response = JSON.parse(xhttp.responseText);
         // Clear the form inputs
+        console.log("User add was successful")
         $('#addUser fieldset input').val('');
-
         // Update the table
         populateTable();
-
       }
-      else {
-
-        // If something goes wrong, alert the error message that our service returned
+      if (xhttp.readyState == 4 && xhttp.status != 200) {
+        console.log("User add failed with error: " + response.msg);
         alert('Error: ' + response.msg);
-
       }
-    });
+    };
+    xhttp.open("POST", addUserUrl, true);
+    xhttp.setRequestHeader("Content-type", 'application/json; charset=UTF-8');
+    xhttp.send(JSON.stringify(newUser));
+    // XHR ends here
   }
   else {
     // If errorCount is more than 0, error out

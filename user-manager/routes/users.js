@@ -28,8 +28,8 @@ router.get('/userlist', function(req, res) {
 /* POST to adduser. */
 router.post('/adduser', function(req, res) {
   console.log("Inside /adduser route");
-  //console.log("Body: " + JSON.stringify(req.body, null, 2));
   var body = req.body;
+  console.log("Raw Body: " + JSON.stringify(body));
   var password = body.password;
   var verify = body.verifypassword;
   console.log("password=" + password);
@@ -40,7 +40,7 @@ router.post('/adduser', function(req, res) {
     console.log("Password hash is: " + hash);
     body["password"] = hash;
     delete body.verifypassword;
-    console.log("Body: " + JSON.stringify(req.body, null, 2));
+    console.log("Body: " + JSON.stringify(body, null, 2));
   }
   else {
     console.log("Passwords are not the same");

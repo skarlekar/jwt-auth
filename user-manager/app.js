@@ -9,9 +9,6 @@ var appConfig = require('./config');
 // Database
 var mongo = require('mongodb');
 var monk = require('monk');
-//var db = monk('mongodb://admin:admin1234@mongo:27017/users');
-
-//var db = monk('mongodb://usersadmin:usersadmin1234@mongo:27017/users');
 var db = monk(dbConfig.url);
 var authenticatorUrl = appConfig.authenticatorUrl;
 
