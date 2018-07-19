@@ -3,6 +3,7 @@ var router = express.Router();
 var jwt = require('jsonwebtoken');
 var appConfig = require('../config');
 const SECRET = "" + process.env.AUTH_SECRET;
+const myAppName = appConfig.appName;
 
 
 router.use((req, res, next) => {
@@ -26,8 +27,18 @@ router.use((req, res, next) => {
       else {
         console.log("Index Router: Right token passed");
         //If decoded then call next() so that respective route is called.
-        req.decoded = decod;
-        next();
+        console.log('JWT Decode: ' + JSON.stringify(decod));
+        console.log('App Name: ' + myAppName);
+        console.log('decod.apps.indexOf(myAppName): ' + decod.apps.indexOf(myAppName));
+        if (decod.apps.indexOf(myAppName) == -1) {
+          var msg = 'User: ' + decod.sub + ' is not authorized for this application: ' + myAppName;
+          console.log(msg);
+          res.status(403).json({ message: msg });
+        }
+        else {
+          req.decoded = decod;
+          next();
+        }
       }
     });
   }
@@ -43,7 +54,7 @@ router.use((req, res, next) => {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'User Management Service' , 'apps': appConfig.apps });
+  res.render('index', { title: 'User Management Service', 'apps': appConfig.apps });
 });
 
 module.exports = router;

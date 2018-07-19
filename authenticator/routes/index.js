@@ -112,6 +112,12 @@ router.post('/login', function(req, res) {
                 console.log("Correct password passed");
                 //create the token.
                 var user = {};
+                user['email'] = result[0].email;
+                user['given_name'] = result[0].firstname;
+                user['family_name'] = result[0].lastname;
+                user['org'] = result[0].org;
+                user['admin'] = result[0].adminUser;
+                user['apps'] = result[0].authorizedApps;
                 user['username'] = req.body.username;
                 user['timestamp'] = Date.now();
                 var audience = appConfig.audience;

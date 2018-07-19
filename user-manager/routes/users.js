@@ -20,7 +20,7 @@ router.get('/userlist', function(req, res) {
   var db = req.db;
   var collection = db.get('userlist');
   collection.find({}, {}, function(e, docs) {
-    console.log("Userlist: "+ JSON.stringify(docs, null, 2));
+    //console.log("Userlist: "+ JSON.stringify(docs, null, 2));
     res.json(docs);
   });
 });
