@@ -1,6 +1,18 @@
 extends layout
 
 block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+  h1(class='text-center') User Manager
+  br
+  #wrapper
+    .card.text-white.bg-danger.w-50
+      .card-header Error #{error.status}
+      .card-body
+        h4.card-title Error Message
+        p.card-text #{message}
+      .card-footer.bg-white.border-danger.text-danger
+        pre #{error.stack}
+  //
+  // h1(class='text-center') Error #{error.status}
+  // h2(class='alert alert-danger')= message
+  // #info(class='alert alert-info')
+  //   pre #{error.stack}

@@ -1,0 +1,45 @@
+extends layout
+block content
+  h1(class='text-center')= title
+  #wrapper
+    #card(class='card bg-secondary')
+      #card-body(class='card-body')
+        #inner-card1(class='card bg-light')
+          #inner-card1-header(class='card-header')
+            h4#cardDetail(class='card-title text-center') User Detail
+          #inner-card1-body(class='card-body')
+            p
+              strong User Name:
+              |  <span id='userInfoUserName'></span>
+              br
+              strong First Name:
+              |  <span id='userInfoFirstName'></span>
+              br
+              strong Last Name:
+              |  <span id='userInfoLastName'></span>
+              br
+              strong Email:
+              |  <span id='userInfoEmail'></span>
+              br
+              strong Organization:
+              |  <span id='userInfoOrg'></span>
+              br
+              strong Admin User:
+              |  <span id='userInfoAdmin'></span>
+              br
+              strong Authorized Applications:
+              |  <span id='userInfoAuthorizedApps'></span>
+        #inner-card2(class='card bg-light')
+          #inner-card2-header(class='card-header')
+            h4#cardSummary(class='card-title text-center') User List
+          #inner-card-body2(class='card-body')
+            #userList(class='container')
+            table(class='table table-striped')
+              thead
+                th UserName
+                th Email
+                th Delete?
+              tbody#user-summary-tbody
+        br
+        - if (admin)
+          include ./admin.jade

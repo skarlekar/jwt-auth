@@ -31,9 +31,11 @@ router.use((req, res, next) => {
         console.log('App Name: ' + myAppName);
         console.log('decod.apps.indexOf(myAppName): ' + decod.apps.indexOf(myAppName));
         if (decod.apps.indexOf(myAppName) == -1) {
-          var msg = 'User: ' + decod.sub + ' is not authorized for this application: ' + myAppName;
+          var msg = 'User ' + decod.sub + ' is not authorized for this application: ' + myAppName;
           console.log(msg);
-          res.status(403).json({ message: msg });
+          //res.status(403).json({ message: msg });
+          res.status(403);
+          res.render('error', { message: msg, error: {status: 403, stack: 'none'} })
         }
         else {
           req.decoded = decod;
@@ -54,7 +56,8 @@ router.use((req, res, next) => {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'User Management Service', 'apps': appConfig.apps });
+  var decod = req.decoded;
+  res.render('index-admin', { title: 'User Management Service', 'apps': appConfig.apps, 'admin': decod.admin });
 });
 
 module.exports = router;
