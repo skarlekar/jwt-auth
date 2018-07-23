@@ -29,9 +29,9 @@ function getParameterByName(name, url) {
 function authenticate() {
   var xhttp = new XMLHttpRequest();
 
-  var data = { username: document.getElementById("username").value, password: document.getElementById("password").value }
+  var data = { username: document.getElementById("username").value, password: document.getElementById("password").value, otp: document.getElementById("otp").value  }
   if (data.username === '' || data.password === '') {
-    document.getElementById("message").innerHTML = "Please fill in all fields!"
+    document.getElementById("message").innerHTML = "Please fill in the Username and Password!"
   }
   else {
     xhttp.onreadystatechange = function() {

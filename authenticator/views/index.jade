@@ -11,6 +11,9 @@ block content
         #div-password(class='form-group')
           label(for='password') Password
           input#password(type='password', class='form-control form-control-sm', placeholder='Password', name='password')
+        #div-otp(class='form-group')
+          label(for='otp') MFA Token
+          input#otp(type='text', class='form-control form-control-sm', placeholder='MFA Token', name='otp')
         input#token(type='hidden', name='token', readonly='readonly')
         br
         #div-button(class='text-md-center')

@@ -85,6 +85,10 @@ function showUserInfo(event) {
   var org = (thisUserObject.org) ? thisUserObject.org : '';
   var authorizedApps = thisUserObject['authorizedApps'];
   var authorized = '';
+  var mfa = (thisUserObject.mfa) ? thisUserObject.mfa : '';
+  var otpAuthUrl = (thisUserObject.otpAuthUrl) ? thisUserObject.otpAuthUrl : '';
+  var admin = (thisUserObject.adminUser) ? thisUserObject.adminUser : '';
+  var canvas = document.getElementById('qrCodeImage');
 
   if ((authorizedApps) && (authorizedApps != 'null'))
     for (var i = 0, len = authorizedApps.length; i < len; i++) {
@@ -92,13 +96,30 @@ function showUserInfo(event) {
       authorized = authorized + authorizedApps[i];
     }
 
+  if (otpAuthUrl != '') {
+    QRCode.toCanvas(canvas, otpAuthUrl, function(error) {
+      if (error) {
+        console.error('Could not paint QR code: ' + error);
+      }
+      else {
+        console.log('Painted QR code successfully!');
+      }
+    });
+  }
+  else {
+    const context = canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
   //Populate Info Box
   $('#userInfoUserName').text(username);
   $('#userInfoFirstName').text(firstname);
   $('#userInfoLastName').text(lastname);
   $('#userInfoEmail').text(email);
   $('#userInfoOrg').text(org);
-  $('#userInfoAdmin').text(thisUserObject.adminUser);
+  $('#userInfoAdmin').text(admin);
+  $('#enableMFA').text(mfa);
+  $('#otpAuthUrl').text(otpAuthUrl);
   $('#userInfoAuthorizedApps').text(authorized);
 };
 
@@ -114,7 +135,7 @@ function addUser(event) {
   // Super basic validation - increase errorCount variable if any fields are blank
   var errorCount = 0;
   $('#addUser input').each(function(index, val) {
-    if ($(this).val() === '' && $(this).attr('id') != 'adminUser') { errorCount++; }
+    if ($(this).val() === '' && ($(this).attr('id') != 'adminUser' || $(this).attr('id') != 'enableMFA')) { errorCount++; }
   });
 
   console.log('ErrorCount: ' + errorCount);
@@ -123,6 +144,7 @@ function addUser(event) {
   if (errorCount === 0) {
 
     var adminUser = $('#addUser fieldset input#adminUser').is(":checked");
+    var mfa = $('#addUser fieldset input#enableMFA').is(":checked");
     var appsVal = "" + $("#authorizedApps").val();
     var authorizedApps = appsVal.split(',');
 
@@ -138,6 +160,7 @@ function addUser(event) {
       password: trim($('#addUser fieldset input#inputPassword').val()),
       verifypassword: trim($('#addUser fieldset input#inputVerifyPassword').val()),
       adminUser: adminUser,
+      mfa: mfa,
       authorizedApps: authorizedApps
     }
 

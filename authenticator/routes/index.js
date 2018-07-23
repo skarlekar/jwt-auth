@@ -1,4 +1,5 @@
 var express = require('express');
+var speakeasy = require('speakeasy');
 var appConfig = require('../config');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
@@ -28,10 +29,11 @@ router.get('/verify', function(req, res) {
     console.log('req.headers = ' + JSON.stringify(req.headers));
     console.log('req.query = ' + JSON.stringify(req.query));
     console.log('req.query.token = ' + JSON.stringify(req.query.token));
-    var token =  req.query.token;
+    var token = req.query.token;
     if (token) {
         console.log('token: ' + token);
-    } else {
+    }
+    else {
         token = '';
         console.log('No token passed');
     }
@@ -43,23 +45,23 @@ router.post('/verify-token', function(req, res) {
     console.log('Inside verify-token');
     var token = req.body.token;
     console.log('token :' + token);
-    
+
     //Decode the token
     jwt.verify(token, SECRET, (err, decoded) => {
-      if (err) {
-          var errorMesssage = err.name + ' : ' + err.message;
-        console.log(errorMesssage);
-        res.status(403).json({
-          message: errorMesssage
-        });
-      }
-      else {
-        console.log("Right token passed");
-        //If decoded then call next() so that respective route is called.
-        res.status(200).json({decoded});
-      }
+        if (err) {
+            var errorMesssage = err.name + ' : ' + err.message;
+            console.log(errorMesssage);
+            res.status(403).json({
+                message: errorMesssage
+            });
+        }
+        else {
+            console.log("Right token passed");
+            //If decoded then call next() so that respective route is called.
+            res.status(200).json({ decoded });
+        }
     });
-  
+
     console.log('Exiting verify-token');
 })
 
@@ -76,6 +78,7 @@ router.post('/login', function(req, res) {
     // Get our form values. These rely on the "name" attributes
     var userName = req.body.username;
     var password = req.body.password;
+    var otp = req.body.otp;
     console.log("username: " + userName);
 
     // Set our collection
@@ -100,7 +103,24 @@ router.post('/login', function(req, res) {
             console.log("Resultset:{" + JSON.stringify(result) + "}");
             console.log("Going to compare passwords");
             var storedPassword = result[0].password;
+            var mfa = result[0].mfa;
+            var mfaSecret = result[0].mfaSecret;
             console.log("Retrieved password from result is: " + storedPassword);
+            if (mfa) {
+                var verified = speakeasy.totp.verify({
+                    secret: mfaSecret,
+                    encoding: 'base32',
+                    token: otp
+                });
+
+                if (!verified) {
+                    console.log("MFA Verification failed!");
+                    message = "Wrong MFA Token";
+                    res.status(403).json({
+                        message
+                    });
+                }
+            }
             if (!isValidPassword(req.body.password, storedPassword)) {
                 console.log("Wrong password entered");
                 message = "Wrong Password";
@@ -123,7 +143,7 @@ router.post('/login', function(req, res) {
                 var audience = appConfig.audience;
                 var issuer = appConfig.issuer;
                 var uid = uuidv1();
-                token = jwt.sign(user, SECRET, {'subject': req.body.username, 'expiresIn': '1h', 'audience': audience, 'issuer': issuer, 'jwtid': uid});
+                token = jwt.sign(user, SECRET, { 'subject': req.body.username, 'expiresIn': '1h', 'audience': audience, 'issuer': issuer, 'jwtid': uid });
                 message = "Login Successful";
 
                 //If token was created, pass the token to client else send respective message

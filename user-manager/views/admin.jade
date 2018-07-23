@@ -30,6 +30,10 @@
           label(for='adminUser', class='form-check-label')  
             input#adminUser(type='checkbox',checked=false, disabled=false, class='form-check-input') 
             span Admin User
+        #div-admin(class='form-check')
+          label(for='enableMFA', class='form-check-label')  
+            input#enableMFA(type='checkbox',checked=false, disabled=false, class='form-check-input') 
+            span Enable MFA
         #div-authorized-apps(class='form-group')
           label(for='authorizedApps') Authorized Applications: 
           select#authorizedApps(multiple=true, class='form-control')

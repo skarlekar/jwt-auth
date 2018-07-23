@@ -29,6 +29,15 @@ block content
               br
               strong Authorized Applications:
               |  <span id='userInfoAuthorizedApps'></span>
+              br
+              strong MFA Enabled:
+              |  <span id='enableMFA'></span>
+              br
+              strong MFA One Time Authentication Code:
+              |  <span id='otpAuthUrl'></span>
+              br
+              strong MFA QR Image:
+              |  <canvas id='qrCodeImage'></canvas>
         #inner-card2(class='card bg-light')
           #inner-card2-header(class='card-header')
             h4#cardSummary(class='card-title text-center') User List

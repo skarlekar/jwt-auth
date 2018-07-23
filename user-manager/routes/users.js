@@ -1,4 +1,6 @@
 var express = require('express');
+var speakeasy = require('speakeasy');
+var qrcode = require('qrcode');
 var router = express.Router();
 var bCrypt = require('bcrypt-nodejs');
 var jwt = require('jsonwebtoken');
@@ -46,6 +48,11 @@ router.post('/adduser', function(req, res) {
     console.log("Passwords are not the same");
     res.send({ msg: 'Password strings are not the same' });
     return;
+  }
+  if (body.mfa) {
+    var mfaSecret = speakeasy.generateSecret({name: 'User Manager: ' + body.subject});
+    body.mfaSecret = mfaSecret.base32;
+    body.otpAuthUrl = mfaSecret.otpauth_url;
   }
   var db = req.db;
   var collection = db.get('userlist');
