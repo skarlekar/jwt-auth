@@ -50,7 +50,7 @@ router.post('/adduser', function(req, res) {
     return;
   }
   if (body.mfa) {
-    var mfaSecret = speakeasy.generateSecret({name: 'User Manager: ' + body.subject});
+    var mfaSecret = speakeasy.generateSecret({name: 'User Manager: ' + body.username});
     body.mfaSecret = mfaSecret.base32;
     body.otpAuthUrl = mfaSecret.otpauth_url;
   }
